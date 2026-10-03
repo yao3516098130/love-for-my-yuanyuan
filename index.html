@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>致我的宝贝 · 刘媛媛</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#ff8fb1;
+    --pink-deep:#ff5c8a;
+    --cream:#fff5f7;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;overflow-x:hidden;}
+  body{
+    background:#070510;
+    font-family:"Noto Serif SC",-apple-system,"PingFang SC","Microsoft YaHei",serif;
+    color:var(--cream);
+    -webkit-font-smoothing:antialiased;
+    overflow-y:auto;
+  }
+
+  /* ===== 星空 / 极光背景 ===== */
+  #stars{
+    position:fixed;inset:0;z-index:0;
+    background:
+      radial-gradient(ellipse 70% 55% at 50% -5%, #3a1236 0%, transparent 62%),
+      radial-gradient(ellipse 55% 45% at 12% 85%, #1d0a33 0%, transparent 65%),
+      radial-gradient(ellipse 55% 45% at 88% 75%, #250b2c 0%, transparent 65%),
+      #070510;
+  }
+  #aurora{
+    position:fixed;inset:-20% -10%;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(circle 340px at 30% 40%, rgba(255,92,138,.18), transparent 70%),
+      radial-gradient(circle 420px at 72% 60%, rgba(180,92,255,.15), transparent 70%);
+    animation:drift 22s ease-in-out infinite alternate;
+    filter:blur(30px);
+  }
+  @keyframes drift{
+    0%{transform:translate(0,0) scale(1);}
+    100%{transform:translate(-4%,3%) scale(1.12);}
+  }
+  canvas{position:fixed;inset:0;z-index:1;pointer-events:none;}
+
+  /* ===== 主内容 ===== */
+  .wrap{
+    position:relative;z-index:2;
+    min-height:100vh;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    padding:48px 20px 60px;
+    text-align:center;
+  }
+
+  /* ===== 跳动的爱心 ===== */
+  .heart-stage{position:relative;width:170px;height:170px;margin-bottom:4px;}
+  .heart{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    filter:drop-shadow(0 0 30px rgba(255,92,138,.6));
+    animation:beat 1.3s ease-in-out infinite;
+    transition:transform .35s;
+  }
+  .heart:hover{transform:scale(1.07);}
+  @keyframes beat{
+    0%,100%{transform:scale(1);}
+    14%{transform:scale(1.15);}
+    28%{transform:scale(1);}
+    42%{transform:scale(1.08);}
+    70%{transform:scale(1);}
+  }
+  .heart svg{width:140px;height:140px;}
+  .pulse{
+    position:absolute;left:50%;top:50%;margin:-70px 0 0 -70px;
+    width:140px;height:140px;border-radius:50%;
+    border:1px solid rgba(255,143,177,.35);
+    animation:ripple 2.6s ease-out infinite;
+  }
+  .pulse:nth-of-type(2){animation-delay:.85s;}
+  .pulse:nth-of-type(3){animation-delay:1.7s;}
+  @keyframes ripple{
+    0%{transform:scale(.72);opacity:.7;}
+    100%{transform:scale(2.15);opacity:0;}
+  }
+
+  /* ===== 标题 ===== */
+  .to{
+    font-family:"Ma Shan Zheng",cursive;
+    font-size:clamp(30px,7.5vw,50px);
+    color:#fff;
+    letter-spacing:.05em;
+    margin-top:16px;
+    line-height:1.35;
+    text-shadow:0 0 36px rgba(255,143,177,.55), 0 0 80px rgba(255,92,138,.3);
+    opacity:0;animation:fadeUp 1.3s .3s forwards;
+  }
+  .to .name{
+    background:linear-gradient(100deg,#ffd0dd,#ff6f9c 45%,#ffb3c9);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+    padding:0 4px;
+  }
+  .sub{
+    margin-top:14px;
+    font-size:clamp(11px,2.9vw,13px);
+    letter-spacing:.42em;
+    color:rgba(255,192,210,.55);
+    text-transform:uppercase;
+    opacity:0;animation:fadeUp 1.3s .55s forwards;
+  }
+
+  /* ===== 纪念日时钟 ===== */
+  .clock{
+    margin-top:42px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:clamp(9px,2.4vw,20px);
+    opacity:0;animation:fadeUp 1.3s .9s forwards;
+  }
+  .unit{
+    min-width:clamp(64px,17vw,94px);
+    padding:15px 8px 12px;
+    border-radius:16px;
+    background:linear-gradient(165deg,rgba(255,255,255,.07),rgba(255,255,255,.025));
+    border:1px solid rgba(255,143,177,.2);
+    backdrop-filter:blur(8px);
+    box-shadow:0 8px 28px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.07);
+  }
+  .num{
+    font-size:clamp(22px,6vw,36px);
+    font-weight:600;
+    font-variant-numeric:tabular-nums;
+    color:#fff;
+    line-height:1.1;
+    text-shadow:0 0 20px rgba(255,92,138,.6);
+  }
+  .lab{
+    margin-top:7px;
+    font-size:clamp(10px,2.6vw,11px);
+    letter-spacing:.22em;
+    color:rgba(255,192,210,.6);
+  }
+  .since{
+    margin-top:20px;
+    font-size:clamp(11px,3vw,13.5px);
+    color:rgba(255,192,210,.5);
+    letter-spacing:.14em;
+    line-height:1.9;
+    opacity:0;animation:fadeUp 1.3s 1.15s forwards;
+  }
+  .since b{color:rgba(255,192,210,.85);font-weight:600;}
+
+  /* ===== 三个关键词 ===== */
+  .words{
+    margin-top:40px;
+    display:flex;flex-wrap:wrap;justify-content:center;
+    gap:clamp(10px,3vw,26px);
+    opacity:0;animation:fadeUp 1.3s 1.4s forwards;
+  }
+  .words span{
+    font-family:"Ma Shan Zheng",cursive;
+    font-size:clamp(19px,4.6vw,26px);
+    color:rgba(255,214,228,.92);
+    letter-spacing:.1em;
+    position:relative;
+    text-shadow:0 0 22px rgba(255,92,138,.45);
+  }
+  .words span::after{
+    content:"";position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);
+    width:26px;height:1px;background:rgba(255,143,177,.45);
+  }
+
+  .hint{
+    margin-top:46px;
+    font-size:clamp(11px,3vw,13px);
+    color:rgba(255,192,210,.55);
+    letter-spacing:.18em;
+    opacity:0;animation:fadeUp 1.3s 1.7s forwards, glow 2.8s 3s ease-in-out infinite;
+  }
+  @keyframes glow{0%,100%{opacity:.55;}50%{opacity:1;}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ===== 情书浮层 ===== */
+  .letter{
+    display:none;
+    position:fixed;inset:0;z-index:999;
+    background:rgba(7,5,16,.93);
+    backdrop-filter:blur(16px);
+    align-items:center;justify-content:center;
+    padding:24px;
+    overflow-y:auto;
+  }
+  .letter.open{display:flex;}
+  .paper{
+    position:relative;
+    max-width:620px;width:100%;
+    max-height:84vh;overflow-y:auto;
+    padding:clamp(30px,5.5vw,56px);
+    border-radius:22px;
+    background:linear-gradient(160deg,#fffafc,#ffeef4 55%,#ffe3ec);
+    color:#4a2436;
+    box-shadow:0 34px 90px rgba(255,92,138,.32), 0 0 0 1px rgba(255,143,177,.35) inset;
+    text-align:left;
+  }
+  .paper::before{
+    content:"❦";
+    position:absolute;top:14px;left:50%;transform:translateX(-50%);
+    color:rgba(255,92,138,.35);font-size:15px;
+  }
+  .paper h2{
+    font-family:"Ma Shan Zheng",cursive;
+    font-size:clamp(25px,5.8vw,36px);
+    font-weight:400;
+    color:var(--pink-deep);
+    margin-bottom:8px;
+    text-align:center;
+    letter-spacing:.05em;
+  }
+  .paper .divider{
+    width:64px;height:2px;margin:0 auto 28px;
+    background:linear-gradient(90deg,transparent,var(--pink),transparent);
+  }
+  .paper p{
+    font-size:clamp(14.5px,3.7vw,16.5px);
+    line-height:2.1;
+    margin-bottom:19px;
+    letter-spacing:.03em;
+    color:#5b3346;
+  }
+  .paper p.em{
+    font-family:"Ma Shan Zheng",cursive;
+    font-size:clamp(20px,5vw,26px);
+    color:var(--pink-deep);
+    text-align:center;
+    line-height:1.85;
+    margin:26px 0;
+    letter-spacing:.12em;
+  }
+  .paper .sign{
+    text-align:right;
+    font-family:"Ma Shan Zheng",cursive;
+    font-size:clamp(18px,4.2vw,22px);
+    color:var(--pink-deep);
+    margin-top:30px;
+  }
+  .close{
+    position:absolute;top:20px;right:22px;
+    width:40px;height:40px;border-radius:50%;
+    border:1px solid rgba(255,143,177,.4);
+    background:rgba(255,255,255,.06);
+    color:var(--cream);font-size:20px;line-height:1;
+    cursor:pointer;transition:.35s;
+  }
+  .close:hover{background:rgba(255,143,177,.28);transform:rotate(90deg);}
+
+  @media (max-width:400px){
+    .clock{gap:8px;}
+    .heart-stage{width:150px;height:150px;}
+    .heart svg,.pulse{width:124px;height:124px;}
+    .pulse{margin:-62px 0 0 -62px;width:124px;height:124px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+<div id="aurora"></div>
+<canvas id="fx"></canvas>
+
+<main class="wrap">
+  <div class="heart-stage" id="heartBtn" title="点开，有句话想对你说">
+    <div class="heart">
+      <div class="pulse"></div>
+      <div class="pulse"></div>
+      <div class="pulse"></div>
+      <svg viewBox="0 0 32 29" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="hg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ffc4d6"/>
+            <stop offset="42%" stop-color="#ff5c8a"/>
+            <stop offset="100%" stop-color="#d81e52"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#hg)" d="M16 28.5S.5 18.9.5 10.2C.5 5 4.4 1 9.3 1c3 0 5.4 1.5 6.7 3.7C17.3 2.5 19.7 1 22.7 1c4.9 0 8.8 4 8.8 9.2 0 8.7-15.5 18.3-15.5 18.3z"/>
+      </svg>
+    </div>
+  </div>
+
+  <h1 class="to">致我的宝贝 &nbsp;<span class="name" id="herName">刘媛媛</span></h1>
+  <p class="sub">To My Dearest Love</p>
+
+  <section class="clock">
+    <div class="unit"><div class="num" id="d">0</div><div class="lab">天</div></div>
+    <div class="unit"><div class="num" id="h">0</div><div class="lab">时</div></div>
+    <div class="unit"><div class="num" id="m">0</div><div class="lab">分</div></div>
+    <div class="unit"><div class="num" id="s">0</div><div class="lab">秒</div></div>
+  </section>
+
+  <p class="since">
+    从 <b id="sinceDate"></b> 那天起<br>
+    我们已经相爱了这么久，并且还会更久
+  </p>
+
+  <div class="words">
+    <span>爱你</span>
+    <span>想你</span>
+    <span>一辈子</span>
+  </div>
+
+  <p class="hint">轻触爱心 · 读一读我想对你说的话</p>
+</main>
+
+<div class="letter" id="letter">
+  <button class="close" id="closeBtn" aria-label="关闭">×</button>
+  <article class="paper">
+    <h2>写给我最爱的刘媛媛</h2>
+    <div class="divider"></div>
+    <p>亲爱的宝贝：</p>
+    <p>有些话在心里藏了很久，今天想认真地说给你听——<b>我爱你</b>。不是随口一说，是想要用很久很久的以后来兑现的那种。</p>
+    <p>遇见你之前，我的日子平平淡淡，过得去也就过去了。遇见你之后，我才发现原来生活里可以有那么多值得期待的小事：等你的一句"在干嘛"、盼着见你一面、连你偶尔皱眉的样子我都想记下来。</p>
+    <p class="em">我爱你</p>
+    <p>你笑的时候，我觉得整个世界都亮了；你不开心的时候，我只想快点到你身边。这辈子能遇见你、能被你选中，是我运气最好的一件事。</p>
+    <p>往后余生，我想一直牵着你的手。晴天陪你晒太阳，下雨替你撑伞，你累了有我，你难过有我，你想去的地方我都陪你去。不用你多懂事、多完美，你只要是我的刘媛媛就够了。</p>
+    <p>谢谢你来到我的世界。<b>我爱你</b>，今天爱，明天爱，以后每一天都爱。</p>
+    <p class="sign">永远爱你的人 &nbsp;♥</p>
+  </article>
+</div>
+
+<script>
+/* ========== 想改内容，改这两行 ========== */
+var HER_NAME = "刘媛媛";
+var START_DATE = "2026-03-13T00:00:00";
+/* ======================================== */
+
+var HER = document.getElementById('herName');
+if (HER) HER.textContent = HER_NAME;
+
+var sd = new Date(START_DATE);
+var sinceEl = document.getElementById('sinceDate');
+if (sinceEl) {
+  sinceEl.textContent = sd.getFullYear() + "年" + (sd.getMonth()+1) + "月" + sd.getDate() + "日";
+}
+
+function tick(){
+  var diff = new Date().getTime() - sd.getTime();
+  if (diff < 0) diff = 0;
+  var total = Math.floor(diff/1000);
+  var dEl = document.getElementById('d'), hEl = document.getElementById('h'),
+      mEl = document.getElementById('m'), sEl = document.getElementById('s');
+  if (dEl) dEl.textContent = Math.floor(total/86400).toLocaleString();
+  if (hEl) hEl.textContent = ("0"+Math.floor(total%86400/3600)).slice(-2);
+  if (mEl) mEl.textContent = ("0"+Math.floor(total%3600/60)).slice(-2);
+  if (sEl) sEl.textContent = ("0"+(total%60)).slice(-2);
+}
+tick();
+setInterval(tick,1000);
+
+var letter = document.getElementById('letter');
+
+function openLetter(){
+  if (letter) letter.className = "letter open";
+}
+function closeLetter(){
+  if (letter) letter.className = "letter";
+}
+
+var hb = document.getElementById('heartBtn');
+if (hb) hb.onclick = openLetter;
+
+var cb = document.getElementById('closeBtn');
+if (cb) cb.onclick = closeLetter;
+
+if (letter) letter.onclick = function(e){ if (e.target === letter) closeLetter(); };
+document.onkeydown = function(e){ if (e.keyCode === 27) closeLetter(); };
+
+/* ---------- 画布：星空 + 爱心粒子 ---------- */
+var cvs = document.getElementById('fx');
+if (cvs && cvs.getContext) {
+  var ctx = cvs.getContext('2d');
+  var W, H, DPR;
+
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = cvs.width  = window.innerWidth  * DPR;
+    H = cvs.height = window.innerHeight * DPR;
+    cvs.style.width  = window.innerWidth  + 'px';
+    cvs.style.height = window.innerHeight + 'px';
+  }
+  resize();
+
+  // 星空
+  var starCanvas = document.createElement('canvas');
+  starCanvas.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:0;pointer-events:none;';
+  var starHost = document.getElementById('stars');
+  if (starHost) starHost.appendChild(starCanvas);
+
+  function drawStars(){
+    var s = starCanvas.getContext('2d');
+    starCanvas.width  = window.innerWidth  * DPR;
+    starCanvas.height = window.innerHeight * DPR;
+    starCanvas.style.width  = window.innerWidth  + 'px';
+    starCanvas.style.height = window.innerHeight + 'px';
+    s.clearRect(0,0,starCanvas.width,starCanvas.height);
+    for (var i=0;i<200;i++){
+      var x = Math.random()*starCanvas.width, y = Math.random()*starCanvas.height;
+      var r = (Math.random()*1.35+.3)*DPR, a = Math.random()*.7+.15;
+      s.beginPath(); s.arc(x,y,r,0,7);
+      s.fillStyle = 'rgba(255,'+(208+Math.floor(Math.random()*47))+',235,'+a+')';
+      s.fill();
+    }
+  }
+  drawStars();
+  window.addEventListener('resize', drawStars);
+  window.addEventListener('resize', resize);
+
+  var parts = [];
+
+  function Particle(x,y,o){
+    o = o || {};
+    var ang = o.ang !== undefined ? o.ang : Math.random()*Math.PI*2;
+    var spd = o.spd !== undefined ? o.spd : Math.random()*1.4+.4;
+    this.x = x; this.y = y;
+    this.vx = Math.cos(ang)*spd*DPR;
+    this.vy = (Math.sin(ang)*spd - 1.1)*DPR;
+    this.size = (o.size || (Math.random()*7+4))*DPR;
+    this.life = 1;
+    this.decay = o.decay || (Math.random()*.008+.006);
+    this.rot = Math.random()*Math.PI*2;
+    this.vr = (Math.random()-.5)*.06;
+    this.color = 'hsl('+(336+Math.random()*34)+',100%,'+(64+Math.random()*16)+'%)';
+  }
+  Particle.prototype.step = function(){
+    this.x += this.vx; this.y += this.vy;
+    this.vy += 0.012*DPR;
+    this.vx *= .995;
+    this.rot += this.vr;
+    this.life -= this.decay;
+  };
+  Particle.prototype.draw = function(){
+    ctx.save();
+    ctx.globalAlpha = Math.max(this.life,0);
+    ctx.translate(this.x,this.y);
+    ctx.rotate(this.rot);
+    ctx.fillStyle = this.color;
+    ctx.shadowBlur = 14; ctx.shadowColor = this.color;
+    var s = this.size/16;
+    ctx.beginPath();
+    ctx.moveTo(0, 4*s);
+    ctx.bezierCurveTo(-7*s,-4*s, -2*s,-10*s, 0,-5*s);
+    ctx.bezierCurveTo(2*s,-10*s, 7*s,-4*s, 0,4*s);
+    ctx.fill();
+    ctx.restore();
+  };
+
+  function burst(x,y,n,power){
+    n = n || 12; power = power || 1;
+    for (var i=0;i<n;i++){
+      parts.push(new Particle(x,y,{
+        ang: Math.random()*Math.PI*2,
+        spd: (Math.random()*2.2+1)*power,
+        decay: Math.random()*.012+.008
+      }));
+    }
+  }
+
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    for (var i=parts.length-1;i>=0;i--){
+      var p = parts[i];
+      p.step(); p.draw();
+      if (p.life <= 0 || p.y > H+60) parts.splice(i,1);
+    }
+    if (parts.length < 75 && Math.random() < .3){
+      parts.push(new Particle(Math.random()*W, H+20, {
+        ang: -Math.PI/2 + (Math.random()-.5)*.7,
+        spd: Math.random()*.7+.25,
+        size: Math.random()*6+3,
+        decay: Math.random()*.003+.002
+      }));
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+
+  var lastMove = 0;
+  function spawnAt(x,y){ burst(x,y,3,0.7); }
+  window.addEventListener('mousemove', function(e){
+    var now = new Date().getTime();
+    if (now - lastMove > 60){ lastMove = now; spawnAt(e.clientX*DPR, e.clientY*DPR); }
+  });
+  window.addEventListener('touchmove', function(e){
+    var t = e.touches[0];
+    var now = new Date().getTime();
+    if (now - lastMove > 70){ lastMove = now; spawnAt(t.clientX*DPR, t.clientY*DPR); }
+  }, {passive:true});
+
+  setTimeout(function(){
+    burst(window.innerWidth/2*DPR, window.innerHeight*0.34*DPR, 34, 1.35);
+  }, 400);
+}
+</script>
+
+</body>
+</html>
